@@ -75,6 +75,7 @@ public class SnakeOrderAcrossPoolsIterator implements Iterator<Driver> {
         current = 1;
         ind = 0;
       }
+      finish++;
       break;
     }
   }
