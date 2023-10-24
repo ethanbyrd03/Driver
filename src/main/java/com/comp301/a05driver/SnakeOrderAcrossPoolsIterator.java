@@ -49,9 +49,7 @@ public class SnakeOrderAcrossPoolsIterator implements Iterator<Driver> {
   }
 
   private void snakeOrder() {
-    if (nextDriver != null) {
-      return;
-    }
+    if (nextDriver != null) return;
     while (finish < driverList.size()) {
       while (!driverList.get(ind).hasNext()) {
         ind += current;
@@ -60,8 +58,8 @@ public class SnakeOrderAcrossPoolsIterator implements Iterator<Driver> {
           ind = driverList.size() - 1;
         }
         if (ind == -1) {
-          ind = 0;
           current = 1;
+          ind = 0;
         }
       }
       nextDriver = driverList.get(ind).next();
