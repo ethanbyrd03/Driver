@@ -5,77 +5,69 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class SnakeOrderAcrossPoolsIterator implements Iterator<Driver> {
-
-  private final List<Iterator<Driver>> driverList;
-  private Driver nextDriver;
+public class SnakeOrderAcrossPoolsIterator implements Iterator {
+  private final List<Iterator<Driver>> driverIteratorList;
   private int ind;
-  private int current;
-  private int finish;
+  private Driver nextDriver;
+  private int done;
+  private int where;
 
   public SnakeOrderAcrossPoolsIterator(List<Iterable<Driver>> driverPools) {
     this.nextDriver = null;
-    this.finish = 0;
-    this.current = 1;
-    this.driverList = new ArrayList<>();
+    this.where = 1;
+    this.done = 0;
+    driverIteratorList = new ArrayList<>();
     for (int i = 0; i < driverPools.size(); i++) {
-      driverList.add(driverPools.get(i).iterator());
-      if (!driverList.get(i).hasNext()) {
-        finish++;
+      driverIteratorList.add(driverPools.get(i).iterator());
+      if (!driverIteratorList.get(i).hasNext()) {
+        done++;
       }
     }
     ind = 0;
   }
 
-  @Override
   public boolean hasNext() {
-    snakeOrder();
-    if (this.nextDriver != null) {
-      return true;
-    } else {
-      return false;
-    }
+    snakeOrderHelper();
+    return this.nextDriver != null;
   }
 
-  @Override
   public Driver next() {
-    if (!hasNext()) {
-      throw new NoSuchElementException();
+    if (this.hasNext()) {
+      Driver temp = nextDriver;
+      nextDriver = null;
+      return temp;
     } else {
-      Driver nextD = this.nextDriver;
-      this.nextDriver = null;
-      return nextD;
+      throw new NoSuchElementException("Error occurred.");
     }
   }
 
-  private void snakeOrder() {
+  private void snakeOrderHelper() {
     if (nextDriver != null) return;
-    while (finish < driverList.size()) {
-      while (!driverList.get(ind).hasNext()) {
-        ind += current;
-        if (ind == driverList.size()) {
-          current = -1;
-          ind = driverList.size() - 1;
+    while (done < driverIteratorList.size()) {
+      while (!driverIteratorList.get(ind).hasNext()) {
+        ind += where;
+        if (ind == driverIteratorList.size()) {
+          where = -1;
+          ind = driverIteratorList.size() - 1;
         }
         if (ind == -1) {
-          current = 1;
+          where = 1;
           ind = 0;
         }
       }
-      nextDriver = driverList.get(ind).next();
-      if (!driverList.get(ind).hasNext()) {
-        current++;
+      nextDriver = driverIteratorList.get(ind).next();
+      if (!driverIteratorList.get(ind).hasNext()) {
+        done++;
       }
-      ind += current;
-      if (ind == driverList.size()) {
-        current = -1;
-        ind = driverList.size() - 1;
+      ind += where;
+      if (ind == driverIteratorList.size()) {
+        where = -1;
+        ind = driverIteratorList.size() - 1;
       }
       if (ind == -1) {
-        current = 1;
+        where = 1;
         ind = 0;
       }
-      finish++;
       break;
     }
   }
